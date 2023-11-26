@@ -1,0 +1,161 @@
+两个网段
+
+一个测试域 	haishitest.lab	半补丁
+一个生产域  haishi.lab		全补丁
+server2016+win10
+
+密码管理：
+除了需要暴力破解+行为习惯密码，其他都随机密码
+
+进攻路线图：
+
+101网段：
+ws01(work):无补丁 开放21端口  192.168.100.21
+
+
+登录sunyache用户
+outlook客户端
+
+ftp匿名访问，owa爆破得到账号密码(gaohexie)	登录exchange邮箱，发现提示信息，需要上传exe，并且
+发邮件需要关键词()，发给需要ws01的本地域用户(sunyache)
+ftp上传exe，邮件触发关键词，钓鱼上线sunyache ws01本地域用户
+
+指定上线exe:   tool.exe/check.exe/safe.exe/scan.exe
+正文或主题包含特定词语：检查/扫描/保护/维护/工具/安全/防范/意识/通知
+
+administrator:F^GP0YTag0JKV6IdqXu
+sunyache/70qtJK%q7)@QVhut8
+gaohexie/sweetpea#1
+
+ws02(exchange 2016 cu18)：全补丁
+exchange服务端
+
+CVE-2021-26857+dcsync拿下域控
+dcsync用户：
+liaide:FIt9YLlK
+
+administrator:7mz$hmTRplgOSOBosF~
+
+
+
+ws03(DC)：补丁
+作为测试域控，拖出hash，碰Linux ssh登录 Linux1(user/Football2022)
+administrator:B35%uIFr6isUQs*JlvM     Orange123qwe.
+DSRM：Otarriinaeyyds.
+
+
+
+双网卡Linux：
+Linux1(web)：docker环境无漏洞， ssh登录 存储Linux2的 数据库配置文件信息(root)
+同时Linux1设置200网段的路由
+Linux2(站库分离数据库)： 连接Linux2数据库
+
+
+200网段：
+
+
+ws04：
+无服务启动
+as_rep 拿到hash，暴力破解(密码是行为习惯字典)(maluzi/Summer2022!)，winrm登录， xshell解密ws05的用户(chenfucong)
+maluzi/haishi@2022   （Kerberos预认证）		5985权限
+administrator:CN5DMc6hH+GC5Ah
+
+
+ws05：
+chenfucong登录  anydesk空路径服务提权
+
+dpapi解密谷歌浏览器密码(本地管理员)，拿到高权限用户(zhaolinlu)，该域用户对gpo具有写权限
+		
+administrator:jvu4HdA@y(nH
+chenfucong:uOgZ+dNroDK@F+TQES		5985权限
+zhaolinlu:tEKO4f4CQ1BPPz~LQm 		对ou具有完全控制权
+
+
+
+该gpo影响04-08 ou  
+flag放在本地管理员目录下
+ws06-08：gpo批量上线
+ws06:
+administrator:Otarriinae_2022
+
+ws07:  192.168.200.156
+administrator:Otarriinae_07
+
+ws08：cmdkey票据 存放sql01的sa密码(sDCU3xWzh0ZD7#5)
+administrator:Otarriinae_2022
+
+
+sql01(mssql)：
+mssql服务
+
+sa登录，数据库以某个域用户(wuxinqi)权限运行mssql，该账号是sql01和sql02的管理员
+xp_dirtree \\ 执行命令监听net-ntlm hash，暴力破解拿到账号密码(rockyou.txt)
+本地用户和域账号同账号密码
+wuxinqi:xxotisxx14.
+administrator:Otarriinae_sql1
+
+sql02()：192.168.201.102
+开放teamviewer服务
+
+防火墙开放3389端口(wuxinqi)登录 
+teamviewer  建立连接 ws09的会话
+		enter-pssession存储在机器上，登录09
+wuxinqi:xxotisxx14.
+administrator:Otarriinae_sql22
+
+
+ws09(管理组策略04-08)：
+tv连接普通账号(xuwenchou/70qtJKQVhut8)
+关闭防火墙
+禁用cmd tasklist/systeminfo/ipconfig/arp-a
+applocker,clm, 禁止执行exe，powershell
+没有执行权限
+%system32%存储 rbcd的账号(husungeng)
+xuwenchou:Admin333.
+administrator:Otarriinae_Admin
+
+ws12(exchange server2016)：
+192.168.201.201
+关闭defender
+rbcd用户(husungeng)
+rbcd拿到服务主机，进程迁移到exchange 管理员用户的进程，赋予自己导出邮件的功能，
+导出administrator邮箱的邮件，outlook客户端加载，翻邮件拿到flag
+
+husungeng:X9NNkYTMp9jA2vKHXXI
+administrator:Otarriinae@Ex3
+
+ws13(DC):
+
+administrator:9MeLhCiLhJD!
+
+SharpAllowedToAct.exe -m husungeng -u administrator -p CN5DM1cl6hH+GC5Ah -t KASPERSKY -a ws13.haishi.lab -d haishi.lab
+
+
+用户添加机器用户
+拿到机器用户的sid
+利用powerview修改属性值
+
+
+
+测试域：
+gaohexie/sweetpea#1				owa爆破成功用户
+sunyache/70qtJK%q7)@QVhut8		钓鱼上线用户
+huwadao/70qtJK%q7)@QVhut8
+linshifeng/70qtJK%q7)@QVhut8
+guogangwei/70qtJK%q7)@QVhut8
+maluzi/70qtJK%q7)@QVhut8
+
+
+
+
+主域:
+haishi.lab
+DSRM：Otarriinaeyyds.
+
+
+maluzi/Summer2022!
+
+
+google:
+852 52296411
+zhaolinlu337@gmail.com
